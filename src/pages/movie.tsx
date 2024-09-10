@@ -5,7 +5,6 @@ import { useQuery } from '@tanstack/react-query'
 import { ApiResponse, type Movie } from '@/interfaces/movie-data'
 import { api } from '@/lib/axios'
 import { ArrowLeft } from 'lucide-react'
-import { useState } from 'react'
 import { VideoPlayer } from '@/components/video-player'
 import { Spinner } from '@/components/spinner'
 
@@ -25,23 +24,17 @@ export function Movie({ trailer }: MoviePageProps) {
     },
   })
 
-  const [isHovered, setIsHovered] = useState(false) // TODO: Add an debounce with 3 seconds of delay for mouse leave
-
   if (!movieId) {
     return <Navigate to="/" />
   }
 
   return (
-    <div
-      className="flex h-screen w-screen select-none items-center justify-center bg-black"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="group flex h-screen w-screen select-none items-center justify-center bg-black">
       <Helmet>
         <title>{movie?.data.title}</title>
       </Helmet>
-      <div className="absolute left-10 top-10 z-50 ">
-        <div className={`flex items-center gap-7 ${isHovered ? '' : 'hidden'}`}>
+      <div className="absolute left-10 top-10 z-50">
+        <div className="hidden items-center gap-7 group-hover:flex">
           <button onClick={() => navigate(-1)}>
             <ArrowLeft className="size-10" />
           </button>
