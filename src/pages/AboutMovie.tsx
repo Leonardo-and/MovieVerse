@@ -1,22 +1,15 @@
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
-import { Link, useNavigate, Navigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ReturnButton } from '@/components/return-button'
 import { parseMovieDuration } from '@/utils/parse-movie-duration'
-import { AboutMovieNotFound } from '@/pages/about-movie-not-found'
 import { useQuery } from '@tanstack/react-query'
 import { type ApiResponse, type Movie } from '@/interfaces/movie-data'
 import { api } from '@/lib/axios'
 import { format } from 'date-fns'
 import { useUserMovieListStore } from '@/stores/user-list-store'
-import { Bookmark, Play } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Bookmark, Play, Clapperboard } from 'lucide-react'
 import { useMemo } from 'react'
 
 export function AboutMovie() {
@@ -24,29 +17,29 @@ export function AboutMovie() {
   const { id } = useParams()
   const navigate = useNavigate()
 
+  const movieId = id || ''
+
   const { data: movie } = useQuery<ApiResponse<Movie>>({
-    queryKey: ['movie', id],
+    queryKey: ['movie', movieId],
     queryFn: async () => {
-      const response = await api.get<ApiResponse<Movie>>(`/movies/${id}`)
+      const response = await api.get<ApiResponse<Movie>>(`/movies/${movieId}`)
 
       return response.data
     },
-    enabled: !!id,
+    enabled: !!movieId,
   })
 
   const { addToUserMovieList, userMovieList, removeFromUserMovieList } =
     useUserMovieListStore()
 
   const isMovieInList = useMemo(() => {
-    return userMovieList.includes(id!)
-  }, [userMovieList, id])
-
-  if (!id) return <Navigate to="/" replace />
+    return userMovieList.includes(movieId)
+  }, [userMovieList, movieId])
 
   function handleAddOrRemoveFromList() {
     isMovieInList
-      ? removeFromUserMovieList(String(id))
-      : addToUserMovieList(String(id))
+      ? removeFromUserMovieList(movieId)
+      : addToUserMovieList(movieId)
   }
 
   return movie?.data ? (
@@ -69,7 +62,7 @@ export function AboutMovie() {
               <p>{parseMovieDuration(movie.data.duration)}</p>
               <p>{format(new Date(movie.data.releaseDate), 'yyyy')}</p>
               <span className="flex items-center gap-2">
-                8.5{' '}
+                8.5 {/* TODO: use an imdb rating from api */}
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/2560px-IMDB_Logo_2016.svg.png"
                   alt=""
@@ -79,9 +72,13 @@ export function AboutMovie() {
             </div>
             <div>
               <h2 className="font-medium text-slate-200/40">Genres</h2>
-              <div className="flex w-full gap-2 *:bg-secondary/30 *:px-3 *:py-1 *:font-normal">
+              <div className="flex w-full gap-2">
                 {movie.data.genres.map((genre) => (
-                  <Badge key={genre} variant="secondary">
+                  <Badge
+                    key={genre}
+                    variant="secondary"
+                    className="bg-secondary/30 px-3 py-1 font-normal"
+                  >
                     {genre}
                   </Badge>
                 ))}
@@ -89,7 +86,7 @@ export function AboutMovie() {
             </div>
             <div>
               <h2 className="font-medium text-slate-200/40">Cast</h2>
-              <div className="flex w-full gap-2 *:bg-secondary/30 *:px-3 *:py-1 *:font-normal">
+              <div className="flex w-full gap-2">
                 {movie.data.cast.map((cast) => (
                   <Badge
                     key={cast}
@@ -109,42 +106,41 @@ export function AboutMovie() {
             </div>
           </div>
         </ScrollArea>
-        <div className="mt-3 flex gap-3">
-          <Button asChild>
-            <Link to={`/watch/${movie.data.id}`} className="flex gap-2">
-              <Play className="size-5 fill-foreground" />
-              Play
-            </Link>
+        <div className="mt-2 w-full">
+          <Button
+            variant="ghost"
+            onClick={handleAddOrRemoveFromList}
+            className="flex gap-2"
+          >
+            <Bookmark className={`${isMovieInList && 'fill-white'}`} />
+            {isMovieInList ? 'Remove from My List' : 'Add to My List'}
           </Button>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" onClick={handleAddOrRemoveFromList}>
-                  <Bookmark
-                    className={`${isMovieInList ? 'fill-white' : ''}`}
-                  />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  {isMovieInList ? 'Remove from My List' : 'Add to My List'}{' '}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </div>
       </article>
-      <div className="w-1/3">
-        <h1>Content</h1>
-        <div className="w-full">
-          <h2>Trailer</h2>
-          <Link to={`/watch/${movie.data.id}/trailer`}>
-            <Button>Watch Trailer</Button>
-          </Link>
-        </div>
+      <div className="flex w-1/3 flex-col gap-3">
+        <Link
+          to={`/watch/${movie.data.id}`}
+          className="group flex items-center justify-center"
+        >
+          <Play className="absolute z-10 size-10 fill-foreground" />
+          <img
+            src="https://picsum.photos/700/400"
+            className="rounded-sm group-hover:brightness-50"
+            alt="placeholder image"
+          />
+        </Link>
+        <Link to={`/watch/${movie.data.id}/trailer`}>
+          <Button variant="secondary" className="flex gap-2">
+            <Clapperboard />
+            Trailers
+          </Button>
+        </Link>
       </div>
     </main>
   ) : (
-    <AboutMovieNotFound />
+    <div>
+      <h1>Movie not found</h1>
+      <Button onClick={() => navigate(-1)}>Go back</Button>
+    </div>
   )
 }
