@@ -1,17 +1,18 @@
-import { Movie } from './pages/movie.tsx'
-import { AddMovie } from './pages/add-movie'
-import { Home } from './pages/Home'
-import { DefaultLayout } from './layouts/Default.tsx'
-import { Releases } from './pages/releases.tsx'
-import { PageNotFound } from './pages/not-found.tsx'
-import { AboutMovie } from './pages/AboutMovie.tsx'
-import { Search } from './pages/search'
-import { MovieCategory } from './pages/movie-category'
-import { AddMovieProvider } from './components/add-movie/add-movie-context'
 import { createBrowserRouter } from 'react-router-dom'
-import { Admin } from './pages/admin'
-import { Settings } from './pages/settings.tsx'
-import { UserList } from './pages/user-list.tsx'
+import { DefaultLayout } from '@/layouts/Default.tsx'
+import {
+  AboutMovie,
+  AddMovie,
+  Admin,
+  Home,
+  MovieCategory,
+  MoviePlayer,
+  PageNotFound,
+  Releases,
+  Search,
+  Settings,
+  UserList,
+} from '@/pages'
 
 export const router = createBrowserRouter([
   {
@@ -24,11 +25,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/add-movie',
-        element: (
-          <AddMovieProvider>
-            <AddMovie />
-          </AddMovieProvider>
-        ),
+        element: <AddMovie />,
       },
       {
         path: '/releases',
@@ -70,10 +67,10 @@ export const router = createBrowserRouter([
   },
   {
     path: '/watch/:movieId',
-    element: <Movie />,
+    element: <MoviePlayer />,
   },
   {
     path: '/watch/:movieId/trailer',
-    element: <Movie trailer />,
+    element: <MoviePlayer trailer />,
   },
 ])

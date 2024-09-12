@@ -1,6 +1,6 @@
 import 'plyr-react/plyr.css'
 import { Helmet } from 'react-helmet-async'
-import { useParams, Navigate, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ApiResponse, type Movie } from '@/interfaces/movie-data'
 import { api } from '@/lib/axios'
@@ -8,11 +8,11 @@ import { ArrowLeft } from 'lucide-react'
 import { VideoPlayer } from '@/components/video-player'
 import { Spinner } from '@/components/spinner'
 
-interface MoviePageProps {
+interface MoviePlayerProps {
   trailer?: boolean
 }
 
-export function Movie({ trailer }: MoviePageProps) {
+export function MoviePlayer({ trailer }: MoviePlayerProps) {
   const movieId = useParams().movieId
   const navigate = useNavigate()
 
@@ -23,10 +23,6 @@ export function Movie({ trailer }: MoviePageProps) {
       return response.data
     },
   })
-
-  if (!movieId) {
-    return <Navigate to="/" />
-  }
 
   return (
     <div className="group flex h-screen w-screen select-none items-center justify-center bg-black">
@@ -39,8 +35,7 @@ export function Movie({ trailer }: MoviePageProps) {
             <ArrowLeft className="size-10" />
           </button>
           <h1 className="pointer-events-none select-none text-3xl font-semibold">
-            {movie?.data.title}
-            {trailer ? ' | Trailer' : ''}
+            {trailer ? `${movie?.data.title} | Trailer` : movie?.data.title}
           </h1>
         </div>
       </div>
