@@ -7,7 +7,7 @@ import { api } from '@/lib/axios'
 export function MovieCategory() {
   const category = useParams().category
 
-  const { data: movies, isError } = useQuery<ApiResponse<Movie[]>>({
+  const { data: movies } = useQuery<ApiResponse<Movie[]>>({
     queryKey: ['movies-category', category],
     queryFn: async () => {
       const response = await api.get('/movies', {
@@ -22,12 +22,21 @@ export function MovieCategory() {
   })
 
   return (
-    <section className="m-10 flex flex-wrap justify-center gap-4">
-      {!movies?.data.length || isError ? (
-        <p>No movies found</p>
-      ) : (
-        movies?.data.map((movie) => <Card key={movie.id} movie={movie} />)
-      )}
-    </section>
+    <main className="m-10">
+      <div>
+        <h1 className="mb-4 flex items-center gap-3 text-3xl font-semibold">
+          <h2 className="text-lg text-neutral-500">Movies</h2>
+          <span className="text-lg text-neutral-500">&gt;</span>
+          {category}
+        </h1>
+        <div className="flex flex-wrap gap-2">
+          {movies?.data ? (
+            movies.data.map((movie) => <Card key={movie.id} movie={movie} />)
+          ) : (
+            <p>Uh oh! No movies found.</p>
+          )}
+        </div>
+      </div>
+    </main>
   )
 }
