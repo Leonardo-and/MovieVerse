@@ -13,21 +13,13 @@ export function Home() {
       </Helmet>
       <RecommendedMovie />
       <main>
-        <Carousel
-          movies={movies.data?.data}
-          title="Discover"
-          isLoading={movies.isLoading}
-        />
-        <Carousel
-          movies={movies.data?.data}
-          title="Trending"
-          isLoading={movies.isLoading}
-        />
-        <Carousel
-          movies={movies.data?.data}
-          title="Top Rated"
-          isLoading={movies.isLoading}
-        />
+        <div className="px-9 py-5">
+          <Carousel
+            movies={movies.data?.data}
+            title="Discover"
+            isLoading={movies.isLoading}
+          />
+        </div>
       </main>
     </div>
   )

@@ -49,7 +49,7 @@ export function Carousel({ movies, title, isLoading }: CarouselProps) {
   }, [api, updateScroll])
 
   return (
-    <div className="flex flex-col px-9 py-5">
+    <div className="flex flex-col">
       <div className="flex items-baseline justify-between">
         <h2 className="mb-3 border-l-2 border-l-primary pl-3 font-semibold">
           {title}
