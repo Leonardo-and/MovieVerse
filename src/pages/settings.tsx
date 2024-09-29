@@ -1,14 +1,12 @@
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { usePersistentState } from '@/hooks/usePersistState'
+import { useUserSettingsStore } from '@/stores/user-settings-store'
 
 export function Settings() {
-  const [shouldAnimateCards, setShouldAnimateCards] = usePersistentState(
-    'animated',
-    true,
-  )
-
-  console.log(shouldAnimateCards)
+  const {
+    setSetting,
+    settings: { animatedCards },
+  } = useUserSettingsStore()
 
   // TODO: make the settings page
   return (
@@ -18,11 +16,11 @@ export function Settings() {
         <Switch
           id="animated"
           onCheckedChange={() => {
-            setShouldAnimateCards(!shouldAnimateCards)
+            setSetting('animatedCards', !animatedCards)
           }}
-          checked={shouldAnimateCards}
+          checked={animatedCards}
         />
-        <Label htmlFor="animated">Animated Cards?</Label>
+        <Label htmlFor="animated">Animate Cards</Label>
       </main>
     </div>
   )
