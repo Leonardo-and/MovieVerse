@@ -15,7 +15,11 @@ export function Releases() {
   return (
     <div className="m-10 flex flex-col gap-4">
       <h1 className="text-3xl font-bold tracking-tight">Releases</h1>
-      <Carousel movies={movies} title="Added recently" />
+      <Carousel
+        movies={movies.data?.data}
+        isLoading={movies.isLoading}
+        title="Added recently"
+      />
     </div>
   )
 }
