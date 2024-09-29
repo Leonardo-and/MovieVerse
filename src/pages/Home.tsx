@@ -13,9 +13,21 @@ export function Home() {
       </Helmet>
       <RecommendedMovie />
       <main>
-        <Carousel movies={movies} title="Discover" />
-        <Carousel movies={movies} title="Trending" />
-        <Carousel movies={movies} title="Top Rated" />
+        <Carousel
+          movies={movies.data?.data}
+          title="Discover"
+          isLoading={movies.isLoading}
+        />
+        <Carousel
+          movies={movies.data?.data}
+          title="Trending"
+          isLoading={movies.isLoading}
+        />
+        <Carousel
+          movies={movies.data?.data}
+          title="Top Rated"
+          isLoading={movies.isLoading}
+        />
       </main>
     </div>
   )
