@@ -11,6 +11,7 @@ import { format } from 'date-fns'
 import { useUserMovieListStore } from '@/stores/user-list-store'
 import { Bookmark, Play, Clapperboard } from 'lucide-react'
 import { useMemo } from 'react'
+import { clsx } from 'clsx'
 
 export function AboutMovie() {
   // TODO: add an video preview of the movie
@@ -36,7 +37,7 @@ export function AboutMovie() {
     return userMovieList.includes(movieId)
   }, [userMovieList, movieId])
 
-  function handleAddOrRemoveFromList() {
+  function handleEditList() {
     isMovieInList
       ? removeFromUserMovieList(movieId)
       : addToUserMovieList(movieId)
@@ -47,7 +48,7 @@ export function AboutMovie() {
       style={{
         backgroundImage: `url(http://localhost:3001/background/${movie.data.backgroundFilename})`,
       }}
-      className={`bg-brightness-dark -mt-24 flex min-h-screen w-full items-center justify-evenly bg-cover bg-center before:bg-black/80`}
+      className="bg-brightness-dark -mt-24 flex min-h-screen w-full items-center justify-evenly bg-cover bg-center before:bg-black/80"
     >
       <ReturnButton onClick={() => navigate(-1)} className="left-3 top-24" />
       <article className="flex max-h-screen w-1/3 flex-col items-center justify-center">
@@ -109,10 +110,10 @@ export function AboutMovie() {
         <div className="mt-2 w-full">
           <Button
             variant="ghost"
-            onClick={handleAddOrRemoveFromList}
+            onClick={handleEditList}
             className="flex gap-2"
           >
-            <Bookmark className={`${isMovieInList && 'fill-white'}`} />
+            <Bookmark className={clsx({ 'fill-white': isMovieInList })} />
             {isMovieInList ? 'Remove from My List' : 'Add to My List'}
           </Button>
         </div>
