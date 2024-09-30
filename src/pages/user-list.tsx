@@ -1,37 +1,42 @@
 import { useUserMovieListStore } from '@/stores/user-list-store'
 import Card, { CardSkeleton } from '@/components/card'
 import { useFetchUserMovies } from '@/hooks/useFetchUserMovies'
-import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
+import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
+import { ApiResponse, Movie } from '@/interfaces/movie-data'
 
 export function UserList() {
   const { userMovieList } = useUserMovieListStore()
 
-  const query = useFetchUserMovies(userMovieList)
+  const { isLoading, data: movies } = useFetchUserMovies(userMovieList)
 
   return (
-    <main className="m-10 flex flex-col gap-3">
+    <main className="m-10 flex h-[80vh] flex-col gap-6">
+      <Helmet>
+        <title>My List</title>
+      </Helmet>
       <h1 className="text-3xl font-bold tracking-tight">My List</h1>
       <div className="flex flex-wrap gap-4">
-        {query.isLoading ? (
-          Array.from({ length: 10 }).map((_, index) => (
-            <CardSkeleton key={index} />
-          ))
-        ) : query.data.length ? (
-          query.data.map((movie) => (
-            <Card key={movie?.data.id} movie={movie!.data} /> // TODO: fix this, TYPEscript isn't happy
-          ))
-        ) : (
-          <p>
-            Uh oh! There&apos;s nothing here. Add some movies to your list on
-            the{' '}
-            <Button variant="link" asChild className="m-0 p-0">
-              <Link to="/">home page</Link>
-            </Button>
-            .
-          </p>
-        )}
+        {isLoading
+          ? Array.from({ length: 10 }).map((_, index) => (
+              <CardSkeleton key={`my-list-card-skeleton-${index}`} />
+            ))
+          : movies
+              .filter((movie): movie is ApiResponse<Movie> => !!movie)
+              .map((movie) => <Card key={movie?.data.id} movie={movie.data} />)}
       </div>
+      {!movies.length && (
+        <div className="flex h-full w-full flex-col items-center justify-center gap-4">
+          <h3 className="text-3xl font-bold tracking-tight">
+            Uh oh! There&apos;s nothing here. &#128533;
+          </h3>
+          <p>You can add some movies here to maybe see later.</p>
+          <Link to="/">
+            <Button>Go to home page</Button>
+          </Link>
+        </div>
+      )}
     </main>
   )
 }
