@@ -1,42 +1,71 @@
-import { useParams } from 'react-router-dom'
-import Card from '@/components/card'
+import { Link, useParams, useNavigate } from 'react-router-dom'
+import Card, { CardSkeleton } from '@/components/card'
 import { useQuery } from '@tanstack/react-query'
 import { ApiResponse, Movie } from '@/interfaces/movie-data'
 import { api } from '@/lib/axios'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+import { Button } from '@/components/ui/button'
 
 export function MovieCategory() {
-  const category = useParams().category
+  const { category } = useParams()
+  const navigate = useNavigate()
 
-  const { data: movies } = useQuery<ApiResponse<Movie[]>>({
+  const { data: movies, isLoading } = useQuery<ApiResponse<Movie[]>>({
     queryKey: ['movies-category', category],
     queryFn: async () => {
-      const response = await api.get('/movies', {
+      const response = await api.get<ApiResponse<Movie[]>>('/movies', {
         params: {
           g: category,
         },
       })
-
       return response.data
     },
-    enabled: !!category,
   })
 
   return (
     <main className="m-10">
-      <div>
-        <h1 className="mb-4 flex items-center gap-3 text-3xl font-semibold">
-          <h2 className="text-lg text-neutral-500">Movies</h2>
-          <span className="text-lg text-neutral-500">&gt;</span>
-          {category}
-        </h1>
-        <div className="flex flex-wrap gap-2">
-          {movies?.data ? (
-            movies.data.map((movie) => <Card key={movie.id} movie={movie} />)
-          ) : (
-            <p>Uh oh! No movies found.</p>
+      <Breadcrumb>
+        <BreadcrumbList className="mb-4 flex items-center">
+          <BreadcrumbItem>
+            <BreadcrumbLink className="text-base">
+              <Link to="/category">Movies</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          {category && (
+            <>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage className="text-xl font-semibold">
+                  {category}
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </>
           )}
+        </BreadcrumbList>
+      </Breadcrumb>
+      <section className="flex flex-wrap items-center justify-center gap-2">
+        {isLoading
+          ? Array.from({ length: 10 }).map((_, index) => (
+              <CardSkeleton key={`movie-skeleton-${index}`} />
+            ))
+          : movies?.data.map((movie) => <Card key={movie.id} movie={movie} />)}
+      </section>
+      {!movies?.data.length && (
+        <div className="flex h-[80vh] w-full flex-col items-center justify-center gap-4">
+          <h3 className="text-3xl font-bold tracking-tight">
+            Uh oh! There&apos;s nothing here. &#128533;
+          </h3>
+          <p>We couldn&apos;t find any movies in the {category} category.</p>
+          <Button onClick={() => navigate(-1)}>Return</Button>
         </div>
-      </div>
+      )}
     </main>
   )
 }
