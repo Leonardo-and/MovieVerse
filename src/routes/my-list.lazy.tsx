@@ -1,12 +1,16 @@
+import { createLazyFileRoute, Link } from '@tanstack/react-router'
 import { useUserMovieListStore } from '@/stores/user-list-store'
 import Card, { CardSkeleton } from '@/components/card'
 import { useFetchUserMovies } from '@/hooks/useFetchUserMovies'
 import { Button } from '@/components/ui/button'
-import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { ApiResponse, Movie } from '@/interfaces/movie-data'
 
-export function UserList() {
+export const Route = createLazyFileRoute('/my-list')({
+  component: UserList,
+})
+
+function UserList() {
   const { userMovieList } = useUserMovieListStore()
 
   const { isLoading, data: movies } = useFetchUserMovies(userMovieList)

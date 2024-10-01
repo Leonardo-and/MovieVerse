@@ -1,7 +1,7 @@
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
-import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ReturnButton } from '@/components/return-button'
 import { parseMovieDuration } from '@/utils/parse-movie-duration'
 import { useQuery } from '@tanstack/react-query'
@@ -13,34 +13,33 @@ import { Bookmark, Play, Clapperboard } from 'lucide-react'
 import { useMemo } from 'react'
 import { clsx } from 'clsx'
 
-export function AboutMovie() {
-  // TODO: add an video preview of the movie
-  const { id } = useParams()
-  const navigate = useNavigate()
+export const Route = createFileRoute('/movies/$id')({
+  component: AboutMovie,
+})
 
-  const movieId = id || ''
+function AboutMovie() {
+  // TODO: add an video preview of the movie
+  const { id } = Route.useParams()
 
   const { data: movie } = useQuery<ApiResponse<Movie>>({
-    queryKey: ['movie', movieId],
+    queryKey: ['movie', id],
     queryFn: async () => {
-      const response = await api.get<ApiResponse<Movie>>(`/movies/${movieId}`)
+      const response = await api.get<ApiResponse<Movie>>(`/movies/${id}`)
 
       return response.data
     },
-    enabled: !!movieId,
+    enabled: !!id,
   })
 
   const { addToUserMovieList, userMovieList, removeFromUserMovieList } =
     useUserMovieListStore()
 
   const isMovieInList = useMemo(() => {
-    return userMovieList.includes(movieId)
-  }, [userMovieList, movieId])
+    return userMovieList.includes(id)
+  }, [userMovieList, id])
 
   function handleEditList() {
-    isMovieInList
-      ? removeFromUserMovieList(movieId)
-      : addToUserMovieList(movieId)
+    isMovieInList ? removeFromUserMovieList(id) : addToUserMovieList(id)
   }
 
   return movie?.data ? (
@@ -50,7 +49,9 @@ export function AboutMovie() {
       }}
       className="bg-brightness-dark -mt-24 flex min-h-screen w-full items-center justify-evenly bg-cover bg-center before:bg-black/80"
     >
-      <ReturnButton onClick={() => navigate(-1)} className="left-3 top-24" />
+      <Link to="/">
+        <ReturnButton className="left-3 top-24" />
+      </Link>
       <article className="flex max-h-screen w-1/3 flex-col items-center justify-center">
         <img
           src={`http://localhost:3001/logo/${movie.data.logoFilename}`}
@@ -141,7 +142,9 @@ export function AboutMovie() {
   ) : (
     <div>
       <h1>Movie not found</h1>
-      <Button onClick={() => navigate(-1)}>Go back</Button>
+      <Link to="..">
+        <Button>Go back</Button>
+      </Link>
     </div>
   )
 }

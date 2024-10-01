@@ -1,3 +1,4 @@
+import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useTMDBMovieData } from '@/hooks/useTMDBMovieData'
@@ -9,7 +10,11 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { AddMovieProvider } from '@/components/add-movie/add-movie-context'
 
-export function AddMovie() {
+export const Route = createFileRoute('/add-movie')({
+  component: AddMovie,
+})
+
+function AddMovie() {
   const [searchParam, setSearchParam] = useState('')
   const debouncedSearchParam = useDebounce(searchParam, 500)
   const { data, isLoading } = useTMDBMovieData(debouncedSearchParam)

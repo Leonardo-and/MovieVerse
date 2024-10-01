@@ -1,8 +1,13 @@
+import { createFileRoute } from '@tanstack/react-router'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { useUserSettingsStore } from '@/stores/user-settings-store'
 
-export function Settings() {
+export const Route = createFileRoute('/u/settings')({
+  component: Settings,
+})
+
+function Settings() {
   const {
     setSetting,
     settings: { animatedCards },

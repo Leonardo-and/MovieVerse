@@ -1,20 +1,19 @@
-import 'plyr-react/plyr.css'
+import { createFileRoute } from '@tanstack/react-router'
 import { Helmet } from 'react-helmet-async'
-import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ApiResponse, type Movie } from '@/interfaces/movie-data'
 import { api } from '@/lib/axios'
 import { ArrowLeft } from 'lucide-react'
 import { VideoPlayer } from '@/components/video-player'
 import { Spinner } from '@/components/spinner'
+import 'plyr-react/plyr.css'
 
-interface MoviePlayerProps {
-  trailer?: boolean
-}
+export const Route = createFileRoute('/watch/$movieId/trailer')({
+  component: MoviePlayer,
+})
 
-export function MoviePlayer({ trailer }: MoviePlayerProps) {
-  const movieId = useParams().movieId
-  const navigate = useNavigate()
+function MoviePlayer() {
+  const { movieId } = Route.useParams()
 
   const { data: movie } = useQuery<ApiResponse<Movie>>({
     queryKey: ['movie', movieId],
@@ -31,17 +30,17 @@ export function MoviePlayer({ trailer }: MoviePlayerProps) {
       </Helmet>
       <div className="absolute left-10 top-10 z-50">
         <div className="hidden items-center gap-7 group-hover:flex">
-          <button onClick={() => navigate(-1)}>
+          <button>
             <ArrowLeft className="size-10" />
           </button>
           <h1 className="pointer-events-none select-none text-3xl font-semibold">
-            {trailer ? `${movie?.data.title} | Trailer` : movie?.data.title}
+            {`${movie?.data.title} | Trailer`}
           </h1>
         </div>
       </div>
       <div className="md:*:w-screen lg:*:h-screen">
         {movieId && movie?.data ? (
-          <VideoPlayer movieId={movieId} trailer={trailer} />
+          <VideoPlayer movieId={movieId} trailer />
         ) : (
           <div>
             <Spinner />

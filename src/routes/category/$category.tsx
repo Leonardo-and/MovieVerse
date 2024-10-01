@@ -1,4 +1,4 @@
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import Card, { CardSkeleton } from '@/components/card'
 import { useQuery } from '@tanstack/react-query'
 import { ApiResponse, Movie } from '@/interfaces/movie-data'
@@ -13,9 +13,12 @@ import {
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 
+export const Route = createFileRoute('/category/$category')({
+  component: MovieCategory,
+})
+
 export function MovieCategory() {
-  const { category } = useParams()
-  const navigate = useNavigate()
+  const { category } = Route.useParams()
 
   const { data: movies, isLoading } = useQuery<ApiResponse<Movie[]>>({
     queryKey: ['movies-category', category],
@@ -63,7 +66,7 @@ export function MovieCategory() {
             Uh oh! There&apos;s nothing here. &#128533;
           </h3>
           <p>We couldn&apos;t find any movies in the {category} category.</p>
-          <Button onClick={() => navigate(-1)}>Return</Button>
+          <Button>Return</Button>
         </div>
       )}
     </main>

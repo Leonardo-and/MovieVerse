@@ -1,6 +1,6 @@
 import { Search } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@tanstack/react-router'
 import { useDebounce } from '@/hooks/useDebounce'
 
 interface SearchButtonProps {
@@ -14,9 +14,10 @@ export function SearchButton({ isOnTop }: SearchButtonProps) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const path =
-      debouncedSearchParam === '' ? '/' : `/search?q=${debouncedSearchParam}`
-    navigate(path)
+    navigate({
+      to: debouncedSearchParam ? '/search' : '/',
+      search: { q: debouncedSearchParam },
+    })
   }, [debouncedSearchParam, navigate])
 
   return (

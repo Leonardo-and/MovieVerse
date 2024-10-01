@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Play, Info } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 import { ShortText } from '@/components/short-text'
 import { useQuery } from '@tanstack/react-query'
 import { type ApiResponse, type Movie } from '@/interfaces/movie-data'
@@ -65,7 +65,7 @@ export function RecommendedMovie() {
                 </Button>
                 <Button variant="secondary" size={'lg'} asChild>
                   <Link
-                    to={`/movie/${movie?.data.id}`}
+                    to={`/movies/${movie?.data.id}`}
                     className="flex items-center gap-2"
                   >
                     <Info />

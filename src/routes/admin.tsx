@@ -1,5 +1,9 @@
-import { Link } from 'react-router-dom'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
+
+export const Route = createFileRoute('/admin')({
+  component: Admin,
+})
 
 export function Admin() {
   // TODO: make the admin page

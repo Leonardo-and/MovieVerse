@@ -1,9 +1,14 @@
+import { createLazyFileRoute } from '@tanstack/react-router'
 import { Helmet } from 'react-helmet-async'
 import { useMoviesData } from '@/hooks/useMoviesData'
 import { RecommendedMovie } from '@/components/recommended-movie'
 import { Carousel } from '@/components/Carousel'
 
-export function Home() {
+export const Route = createLazyFileRoute('/')({
+  component: Home,
+})
+
+function Home() {
   const movies = useMoviesData()
 
   return (

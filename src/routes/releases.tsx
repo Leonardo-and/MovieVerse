@@ -1,9 +1,14 @@
+import { createFileRoute } from '@tanstack/react-router'
 import { ApiResponse, Movie } from '@/interfaces/movie-data'
 import { api } from '@/lib/axios'
 import { useQuery } from '@tanstack/react-query'
 import { Carousel } from '@/components/Carousel'
 
-export function Releases() {
+export const Route = createFileRoute('/releases')({
+  component: Releases,
+})
+
+function Releases() {
   const movies = useQuery<ApiResponse<Movie[]>>({
     queryKey: ['releases'],
     queryFn: async () => {

@@ -5,7 +5,7 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
 import { LucideIcon } from 'lucide-react'
-import { NavLink, Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 
 interface HeaderLinkProps {
   name: string
@@ -23,18 +23,24 @@ export function HeaderLinkItem({
   return (
     <NavigationMenuItem>
       {!subLinks ? (
-        <NavLink to={path} className={navigationMenuTriggerStyle()}>
+        <Link
+          to={path}
+          className={navigationMenuTriggerStyle()}
+          activeProps={{
+            className: 'text-primary focus:text-primary',
+          }}
+        >
           <Icon className="mr-2 size-4" />
           {name}
-        </NavLink>
+        </Link>
       ) : (
         <>
-          <NavLink to={path}>
+          <Link to={path}>
             <NavigationMenuTrigger className="gap-2">
               <Icon className="size-4" />
               {name}
             </NavigationMenuTrigger>
-          </NavLink>
+          </Link>
 
           <NavigationMenuContent>
             <ul className="flex w-96 flex-wrap justify-evenly">

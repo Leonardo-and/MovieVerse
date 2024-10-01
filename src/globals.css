@@ -68,9 +68,6 @@
     appearance: none;
     display: none;
   }
-  .active {
-    @apply text-violet-400;
-  }
 }
 
 @layer components {

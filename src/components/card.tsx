@@ -1,6 +1,6 @@
 import { Movie } from '@/interfaces/movie-data'
 import { useCallback, useState, MouseEventHandler } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 import { Skeleton } from './ui/skeleton'
 import { AspectRatio } from './ui/aspect-ratio'
 import { clsx } from 'clsx'
@@ -36,7 +36,7 @@ export default function Card({ movie }: CardProps) {
   }, [])
 
   return (
-    <Link to={`/movie/${movie.id}`}>
+    <Link to={`/movies/${movie.id}`}>
       <div className="w-[170px]">
         <AspectRatio ratio={2 / 3}>
           <img
