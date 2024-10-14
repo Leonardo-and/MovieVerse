@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Play, Info } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
-import { ShortText } from '@/components/short-text'
 import { useQuery } from '@tanstack/react-query'
 import { type ApiResponse, type Movie } from '@/interfaces/movie-data'
 import { api } from '@/lib/axios'
@@ -44,10 +43,9 @@ export function RecommendedMovie() {
 
         <div className="flex">
           <div className="flex flex-col gap-4">
-            <ShortText className="pointer-events-none hidden select-none text-justify shadow-black text-shadow-lg sm:block">
+            <p className="pointer-events-none line-clamp-3 select-none truncate text-wrap text-justify shadow-black text-shadow-lg">
               {movie?.data.overview || <Skeleton className="h-20 w-[90%]" />}
-            </ShortText>
-
+            </p>
             {movie?.data && (
               <div className="flex gap-2">
                 <Button
