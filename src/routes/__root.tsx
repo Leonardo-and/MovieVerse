@@ -1,19 +1,18 @@
 import Header from '@/components/header'
 import { Toaster } from '@/components/ui/toaster'
-import { createRootRoute, Outlet, useLocation } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+import { createRootRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createRootRoute({
   component: DefaultLayout,
 })
 
 function DefaultLayout() {
-  const location = useLocation()
+  //   const location = useLocation()
 
-  if (location.pathname.startsWith('/watch')) {
-    // TODO: Find a better way to do this
-    return <Outlet />
-  }
+  //   if (location.pathname.startsWith('/watch')) {
+  //     // TODO: Find a better way to do this
+  //     return <Outlet />
+  //   }
 
   return (
     <div>
@@ -22,7 +21,6 @@ function DefaultLayout() {
         <Outlet />
       </div>
       <Toaster />
-      <TanStackRouterDevtools />
     </div>
   )
 }

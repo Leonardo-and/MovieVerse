@@ -32,7 +32,7 @@ interface AddMovieDialogProps extends ButtonProps {
   setImage: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-export function MovieDialog({
+export function SearchMovieDialog({
   searchParam,
   setSearchParam,
   data,

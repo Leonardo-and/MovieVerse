@@ -27,7 +27,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { TagInput } from './add-movie-form-tag-input'
+import { TagInput } from './tag-input'
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required' }),
@@ -51,30 +51,11 @@ const formSchema = z.object({
 
 export type FormValues = z.infer<typeof formSchema>
 
-interface AddMovieFormPros extends React.HTMLAttributes<HTMLDivElement> {
-  dialog: JSX.Element
-}
-
-export function AddMovieForm({ dialog, ...props }: AddMovieFormPros) {
+export function AddMovieForm() {
   const { selectedMovie } = useContext(AddMovieContext)
-
-  async function onSubmit(values: FormValues) {
-    console.log({
-      ...values,
-      genres: values.genres.map((genre) => genre.value),
-      cast: values.cast.map((cast) => cast.value),
-    })
-  }
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: '',
-      overview: '',
-      release_date: '',
-      genres: [],
-      cast: [],
-    },
   })
 
   useEffect(() => {
@@ -84,34 +65,34 @@ export function AddMovieForm({ dialog, ...props }: AddMovieFormPros) {
         genres: selectedMovie.genres.map((genre) => ({
           value: genre,
         })),
-        // cast: selectedMovie.cast.map((genre) => ({
-        //   value: genre,
-        // })),
       })
     }
   }, [selectedMovie, form])
 
+  async function onSubmit(values: FormValues) {
+    console.log({
+      ...values,
+      genres: values.genres.map((genre) => genre.value),
+      cast: values.cast.map((cast) => cast.value),
+    })
+  }
+
   return (
-    <Card {...props}>
-      <CardHeader className="space-y-4">
-        <div className="flex w-full justify-between">
+    <Card>
+      <CardHeader>
+        <div className="flex justify-between">
           <div>
             <CardTitle>Add movie to catalog</CardTitle>
             <CardDescription>
               Fill in the form to add a new movie
             </CardDescription>
           </div>
-          {dialog}
         </div>
-        <Separator />
       </CardHeader>
+      <Separator className="my-4" />
       <CardContent>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6"
-            id="add-movie-form"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="title"

@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Movie } from '@/interfaces/movie-data'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
-import { Link } from 'react-router-dom'
+import { Link } from '@tanstack/react-router'
 
 dayjs.extend(duration)
 
@@ -42,7 +42,7 @@ export function MovieDialog({ movie }: MovieDialogProps) {
         <p className="text-justify">
           <strong>Overview:</strong> {movie.overview}
         </p>
-        <Link to={`/watch/${movie.id}`}>
+        <Link to="/watch/$movieId" params={{ movieId: movie.id }}>
           <Button>Play</Button>
         </Link>
       </div>

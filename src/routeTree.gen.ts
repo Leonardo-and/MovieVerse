@@ -19,17 +19,25 @@ import { Route as AdminImport } from './routes/admin'
 import { Route as AddMovieImport } from './routes/add-movie'
 import { Route as CategoryIndexImport } from './routes/category/index'
 import { Route as WatchMovieIdImport } from './routes/watch/$movieId'
-import { Route as USettingsImport } from './routes/u/settings'
+import { Route as UUImport } from './routes/u/_u'
 import { Route as MoviesIdImport } from './routes/movies.$id'
 import { Route as CategoryCategoryImport } from './routes/category/$category'
 import { Route as WatchMovieIdTrailerImport } from './routes/watch/$movieId.trailer'
+import { Route as UUAppearanceImport } from './routes/u/_u.appearance'
+import { Route as UUAccountImport } from './routes/u/_u.account'
 
 // Create Virtual Routes
 
+const UImport = createFileRoute('/u')()
 const MyListLazyImport = createFileRoute('/my-list')()
 const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
+
+const URoute = UImport.update({
+  path: '/u',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const MyListLazyRoute = MyListLazyImport.update({
   path: '/my-list',
@@ -71,9 +79,9 @@ const WatchMovieIdRoute = WatchMovieIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const USettingsRoute = USettingsImport.update({
-  path: '/u/settings',
-  getParentRoute: () => rootRoute,
+const UURoute = UUImport.update({
+  id: '/_u',
+  getParentRoute: () => URoute,
 } as any)
 
 const MoviesIdRoute = MoviesIdImport.update({
@@ -89,6 +97,16 @@ const CategoryCategoryRoute = CategoryCategoryImport.update({
 const WatchMovieIdTrailerRoute = WatchMovieIdTrailerImport.update({
   path: '/trailer',
   getParentRoute: () => WatchMovieIdRoute,
+} as any)
+
+const UUAppearanceRoute = UUAppearanceImport.update({
+  path: '/appearance',
+  getParentRoute: () => UURoute,
+} as any)
+
+const UUAccountRoute = UUAccountImport.update({
+  path: '/account',
+  getParentRoute: () => UURoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -151,12 +169,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MoviesIdImport
       parentRoute: typeof rootRoute
     }
-    '/u/settings': {
-      id: '/u/settings'
-      path: '/u/settings'
-      fullPath: '/u/settings'
-      preLoaderRoute: typeof USettingsImport
+    '/u': {
+      id: '/u'
+      path: '/u'
+      fullPath: '/u'
+      preLoaderRoute: typeof UImport
       parentRoute: typeof rootRoute
+    }
+    '/u/_u': {
+      id: '/u/_u'
+      path: '/u'
+      fullPath: '/u'
+      preLoaderRoute: typeof UUImport
+      parentRoute: typeof URoute
     }
     '/watch/$movieId': {
       id: '/watch/$movieId'
@@ -172,6 +197,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoryIndexImport
       parentRoute: typeof rootRoute
     }
+    '/u/_u/account': {
+      id: '/u/_u/account'
+      path: '/account'
+      fullPath: '/u/account'
+      preLoaderRoute: typeof UUAccountImport
+      parentRoute: typeof UUImport
+    }
+    '/u/_u/appearance': {
+      id: '/u/_u/appearance'
+      path: '/appearance'
+      fullPath: '/u/appearance'
+      preLoaderRoute: typeof UUAppearanceImport
+      parentRoute: typeof UUImport
+    }
     '/watch/$movieId/trailer': {
       id: '/watch/$movieId/trailer'
       path: '/trailer'
@@ -183,6 +222,28 @@ declare module '@tanstack/react-router' {
 }
 
 // Create and export the route tree
+
+interface UURouteChildren {
+  UUAccountRoute: typeof UUAccountRoute
+  UUAppearanceRoute: typeof UUAppearanceRoute
+}
+
+const UURouteChildren: UURouteChildren = {
+  UUAccountRoute: UUAccountRoute,
+  UUAppearanceRoute: UUAppearanceRoute,
+}
+
+const UURouteWithChildren = UURoute._addFileChildren(UURouteChildren)
+
+interface URouteChildren {
+  UURoute: typeof UURouteWithChildren
+}
+
+const URouteChildren: URouteChildren = {
+  UURoute: UURouteWithChildren,
+}
+
+const URouteWithChildren = URoute._addFileChildren(URouteChildren)
 
 interface WatchMovieIdRouteChildren {
   WatchMovieIdTrailerRoute: typeof WatchMovieIdTrailerRoute
@@ -205,9 +266,11 @@ export interface FileRoutesByFullPath {
   '/my-list': typeof MyListLazyRoute
   '/category/$category': typeof CategoryCategoryRoute
   '/movies/$id': typeof MoviesIdRoute
-  '/u/settings': typeof USettingsRoute
+  '/u': typeof UURouteWithChildren
   '/watch/$movieId': typeof WatchMovieIdRouteWithChildren
   '/category': typeof CategoryIndexRoute
+  '/u/account': typeof UUAccountRoute
+  '/u/appearance': typeof UUAppearanceRoute
   '/watch/$movieId/trailer': typeof WatchMovieIdTrailerRoute
 }
 
@@ -220,9 +283,11 @@ export interface FileRoutesByTo {
   '/my-list': typeof MyListLazyRoute
   '/category/$category': typeof CategoryCategoryRoute
   '/movies/$id': typeof MoviesIdRoute
-  '/u/settings': typeof USettingsRoute
+  '/u': typeof UURouteWithChildren
   '/watch/$movieId': typeof WatchMovieIdRouteWithChildren
   '/category': typeof CategoryIndexRoute
+  '/u/account': typeof UUAccountRoute
+  '/u/appearance': typeof UUAppearanceRoute
   '/watch/$movieId/trailer': typeof WatchMovieIdTrailerRoute
 }
 
@@ -236,9 +301,12 @@ export interface FileRoutesById {
   '/my-list': typeof MyListLazyRoute
   '/category/$category': typeof CategoryCategoryRoute
   '/movies/$id': typeof MoviesIdRoute
-  '/u/settings': typeof USettingsRoute
+  '/u': typeof URouteWithChildren
+  '/u/_u': typeof UURouteWithChildren
   '/watch/$movieId': typeof WatchMovieIdRouteWithChildren
   '/category/': typeof CategoryIndexRoute
+  '/u/_u/account': typeof UUAccountRoute
+  '/u/_u/appearance': typeof UUAppearanceRoute
   '/watch/$movieId/trailer': typeof WatchMovieIdTrailerRoute
 }
 
@@ -253,9 +321,11 @@ export interface FileRouteTypes {
     | '/my-list'
     | '/category/$category'
     | '/movies/$id'
-    | '/u/settings'
+    | '/u'
     | '/watch/$movieId'
     | '/category'
+    | '/u/account'
+    | '/u/appearance'
     | '/watch/$movieId/trailer'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -267,9 +337,11 @@ export interface FileRouteTypes {
     | '/my-list'
     | '/category/$category'
     | '/movies/$id'
-    | '/u/settings'
+    | '/u'
     | '/watch/$movieId'
     | '/category'
+    | '/u/account'
+    | '/u/appearance'
     | '/watch/$movieId/trailer'
   id:
     | '__root__'
@@ -281,9 +353,12 @@ export interface FileRouteTypes {
     | '/my-list'
     | '/category/$category'
     | '/movies/$id'
-    | '/u/settings'
+    | '/u'
+    | '/u/_u'
     | '/watch/$movieId'
     | '/category/'
+    | '/u/_u/account'
+    | '/u/_u/appearance'
     | '/watch/$movieId/trailer'
   fileRoutesById: FileRoutesById
 }
@@ -297,7 +372,7 @@ export interface RootRouteChildren {
   MyListLazyRoute: typeof MyListLazyRoute
   CategoryCategoryRoute: typeof CategoryCategoryRoute
   MoviesIdRoute: typeof MoviesIdRoute
-  USettingsRoute: typeof USettingsRoute
+  URoute: typeof URouteWithChildren
   WatchMovieIdRoute: typeof WatchMovieIdRouteWithChildren
   CategoryIndexRoute: typeof CategoryIndexRoute
 }
@@ -311,7 +386,7 @@ const rootRouteChildren: RootRouteChildren = {
   MyListLazyRoute: MyListLazyRoute,
   CategoryCategoryRoute: CategoryCategoryRoute,
   MoviesIdRoute: MoviesIdRoute,
-  USettingsRoute: USettingsRoute,
+  URoute: URouteWithChildren,
   WatchMovieIdRoute: WatchMovieIdRouteWithChildren,
   CategoryIndexRoute: CategoryIndexRoute,
 }
@@ -336,7 +411,7 @@ export const routeTree = rootRoute
         "/my-list",
         "/category/$category",
         "/movies/$id",
-        "/u/settings",
+        "/u",
         "/watch/$movieId",
         "/category/"
       ]
@@ -365,8 +440,19 @@ export const routeTree = rootRoute
     "/movies/$id": {
       "filePath": "movies.$id.tsx"
     },
-    "/u/settings": {
-      "filePath": "u/settings.tsx"
+    "/u": {
+      "filePath": "u",
+      "children": [
+        "/u/_u"
+      ]
+    },
+    "/u/_u": {
+      "filePath": "u/_u.tsx",
+      "parent": "/u",
+      "children": [
+        "/u/_u/account",
+        "/u/_u/appearance"
+      ]
     },
     "/watch/$movieId": {
       "filePath": "watch/$movieId.tsx",
@@ -376,6 +462,14 @@ export const routeTree = rootRoute
     },
     "/category/": {
       "filePath": "category/index.tsx"
+    },
+    "/u/_u/account": {
+      "filePath": "u/_u.account.tsx",
+      "parent": "/u/_u"
+    },
+    "/u/_u/appearance": {
+      "filePath": "u/_u.appearance.tsx",
+      "parent": "/u/_u"
     },
     "/watch/$movieId/trailer": {
       "filePath": "watch/$movieId.trailer.tsx",

@@ -27,7 +27,7 @@ export function HeaderLinkItem({
           to={path}
           className={navigationMenuTriggerStyle()}
           activeProps={{
-            className: 'text-primary focus:text-primary',
+            className: 'text-violet-400 focus:text-primary',
           }}
         >
           <Icon className="mr-2 size-4" />
