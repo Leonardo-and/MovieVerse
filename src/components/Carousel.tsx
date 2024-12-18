@@ -86,7 +86,7 @@ export function Carousel({ movies, title, isLoading }: CarouselProps) {
                   <Skeleton className="h-[300px] w-[200px]" />
                 </CarouselItem>
               ))
-            : movies?.concat(movies).map((movie) => (
+            : movies?.map((movie) => (
                 <CarouselItem key={movie.id} className="basis-auto pl-2">
                   <Card movie={movie} />
                 </CarouselItem>

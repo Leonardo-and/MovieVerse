@@ -5,9 +5,13 @@ import {
 } from 'react-hook-form'
 import { Input } from '@/components/ui/input'
 import { type FormValues } from '../add-movie-form'
-import { DndContext, type DragEndEvent, closestCenter } from '@dnd-kit/core'
 import {
-  arrayMove,
+  DndContext,
+  //  type DragEndEvent,
+  closestCenter,
+} from '@dnd-kit/core'
+import {
+  //   arrayMove,
   SortableContext,
   rectSortingStrategy,
 } from '@dnd-kit/sortable'
@@ -22,22 +26,22 @@ export function TagInput({ control, tag }: TagInputProps) {
   const {
     fields,
     append,
-    replace,
+    // replace,
     //  remove
   } = useFieldArray({
     name: tag,
     control,
   })
-  const onDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event
+  //   const onDragEnd = (event: DragEndEvent) => {
+  //     const { active, over } = event
 
-    if (over && active.id !== over.id) {
-      const oldIndex = fields.findIndex((item) => item.id === active.id)
-      const newIndex = fields.findIndex((item) => item.id === over.id)
-      const updatedFields = arrayMove(fields, oldIndex, newIndex)
-      replace(updatedFields)
-    }
-  }
+  //     if (over && active.id !== over.id) {
+  //       const oldIndex = fields.findIndex((item) => item.id === active.id)
+  //       const newIndex = fields.findIndex((item) => item.id === over.id)
+  //       const updatedFields = arrayMove(fields, oldIndex, newIndex)
+  //       replace(updatedFields)
+  //     }
+  //   }
 
   const removeComma = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.target
@@ -61,14 +65,17 @@ export function TagInput({ control, tag }: TagInputProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <DndContext onDragEnd={onDragEnd} collisionDetection={closestCenter}>
+      <DndContext
+        //   onDragEnd={onDragEnd}
+        collisionDetection={closestCenter}
+      >
         <SortableContext
           items={fields.map((field) => field.id)}
           strategy={rectSortingStrategy}
         >
           <ul className="flex flex-row flex-wrap gap-2">
             {fields.map((tag) => (
-              <div key={tag.id}>{JSON.stringify(tag)}</div>
+              <div key={tag.id}>{tag.value}</div>
               //   <SortableItem
               //     key={tag.id}
               //     id={tag.id}

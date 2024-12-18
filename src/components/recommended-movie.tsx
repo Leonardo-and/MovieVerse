@@ -43,9 +43,15 @@ export function RecommendedMovie() {
 
         <div className="flex">
           <div className="flex flex-col gap-4">
-            <p className="pointer-events-none line-clamp-3 select-none truncate text-wrap text-justify shadow-black text-shadow-lg">
-              {movie?.data.overview || <Skeleton className="h-20 w-[90%]" />}
-            </p>
+            {movie?.data?.overview ? (
+              <p className="pointer-events-none line-clamp-3 select-none truncate text-wrap text-justify shadow-black text-shadow-lg">
+                {movie.data.overview}
+              </p>
+            ) : (
+              <div className="pointer-events-none line-clamp-3 select-none truncate text-wrap text-justify shadow-black text-shadow-lg">
+                <Skeleton className="h-20 w-[90%]" />
+              </div>
+            )}
             {movie?.data && (
               <div className="flex gap-2">
                 <Button
